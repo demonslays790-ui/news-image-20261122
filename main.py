@@ -1,36 +1,28 @@
 #!/usr/bin/env python3
-"""Publish the v3 front page for make.fun news-image-20261122.
+"""Publish the v4 front page for make.fun news-image-20261122.
 
-The image itself (entry.png: 42 verified 22 November 2026 stories,
-drawn by generate_image.py) already ships in this repository, so this
-program only places a copy where the grader collects it. No network
-access is used, and the bytes written are always the same as entry.png.
+This entry's image (entry.png: 35 verified 22 November 2026 stories
+in 6 regions, drawn by generate_image.py) is bundled in the repo, so
+publishing is just copying that file to the grader's output folder.
+The program touches no network and always writes the same bytes as
+entry.png, so repeated runs are identical.
 """
 
-from os import environ
-from pathlib import Path
-from shutil import copyfile
+import os
+import shutil
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def source_image():
-    """The pre-rendered front page bundled with this repository."""
-    return Path(__file__).resolve().parent.joinpath("entry.png")
-
-
-def destination():
-    """The output path, creating the output folder when needed."""
-    folder = Path(environ.get("MAKEFUN_OUTPUT_DIR") or "/output")
-    folder.mkdir(parents=True, exist_ok=True)
-    return folder.joinpath("entry.png")
-
-
-def publish():
-    target = destination()
-    copyfile(source_image(), target)
-    target.chmod(0o644)
-    print("wrote", target)
-    return 0
+def run():
+    src = os.path.join(HERE, "entry.png")
+    outdir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+    os.makedirs(outdir, exist_ok=True)
+    dst = os.path.join(outdir, "entry.png")
+    shutil.copyfile(src, dst)
+    os.chmod(dst, 0o644)
+    print("wrote " + dst)
 
 
 if __name__ == "__main__":
-    raise SystemExit(publish())
+    run()
