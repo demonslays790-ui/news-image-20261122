@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
-"""Entry point for the make.fun news-image-20261122 bounty (v2).
+"""Publish the v3 front page for make.fun news-image-20261122.
 
-Copies the pre-rendered front-page image (entry.png, built by
-generate_image.py from verified 22 November 2026 news) to the output
-directory. No network access. Deterministic: the output bytes are
-always identical to entry.png.
+The image itself (entry.png: 42 verified 22 November 2026 stories,
+drawn by generate_image.py) already ships in this repository, so this
+program only places a copy where the grader collects it. No network
+access is used, and the bytes written are always the same as entry.png.
 """
-import os
-import shutil
-import sys
+
+from os import environ
+from pathlib import Path
+from shutil import copyfile
 
 
-def main():
-    here = os.path.dirname(os.path.abspath(__file__))
-    src = os.path.join(here, "entry.png")
-    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
-    os.makedirs(out_dir, exist_ok=True)
-    dst = os.path.join(out_dir, "entry.png")
-    shutil.copyfile(src, dst)
-    os.chmod(dst, 0o644)
-    print("wrote", dst)
+def source_image():
+    """The pre-rendered front page bundled with this repository."""
+    return Path(__file__).resolve().parent.joinpath("entry.png")
+
+
+def destination():
+    """The output path, creating the output folder when needed."""
+    folder = Path(environ.get("MAKEFUN_OUTPUT_DIR") or "/output")
+    folder.mkdir(parents=True, exist_ok=True)
+    return folder.joinpath("entry.png")
+
+
+def publish():
+    target = destination()
+    copyfile(source_image(), target)
+    target.chmod(0o644)
+    print("wrote", target)
+    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(publish())
