@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Entry point for the make.fun news-image-20261122 bounty.
+"""Entry point for the make.fun news-image-20261122 bounty (v2).
 
 Copies the pre-rendered front-page image (entry.png, built by
 generate_image.py from verified 22 November 2026 news) to the output
@@ -8,7 +8,6 @@ always identical to entry.png.
 """
 import os
 import shutil
-import stat
 import sys
 
 
